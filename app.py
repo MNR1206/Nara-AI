@@ -17,7 +17,7 @@ from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 
 app = Flask(__name__)
-app.secret_key = 'your-secret-key-change-this-in-production'
+app.secret_key = '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'
 CORS(app, supports_credentials=True)
 
 
