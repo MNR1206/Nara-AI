@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NARA AI - Login</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  
+  <!-- Google Sign-In -->
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+  
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', Roboto, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 1rem;
+    }
+
+    .container {
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      width: 100%;
+      max-width: 400px;
+      padding: 2rem;
+    }
+
+    .logo {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    .logo h1 {
+      font-size: 2rem;
+      color: #4f46e5;
+      font-weight: 600;
+    }
+
+    .logo p {
+      color: #6b7280;
+      font-size: 0.9rem;
+      margin-top: 0.5rem;
+    }
+
+    .tabs {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      border-bottom: 2px solid #e5e7eb;
+    }
+
+    .tab {
+      flex: 1;
+      padding: 0.75rem;
+      text-align: center;
+      cursor: pointer;
+      color: #6b7280;
+      font-weight: 500;
+      border-bottom: 2px solid transparent;
+      margin-bottom: -2px;
+      transition: all 0.3s;
+    }
+
+    .tab.active {
+      color: #4f46e5;
+      border-bottom-color: #4f46e5;
+    }
+
+    .form {
+      display: none;
+    }
+
+    .form.active {
+      display: block;
+    }
+
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 0.5rem;
+      color: #374151;
+      font-weight: 500;
+      font-size: 0.9rem;
+    }
+
+    input {
+      width: 100%;
+      padding: 0.75rem;
+      border: 1px solid #d1d5db;
+      border-radius: 8px;
+      font-size: 1rem;
+      transition: all 0.3s;
+    }
+
+    input:focus {
+      outline: none;
+      border-color: #4f46e5;
+      box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+    }
+
+    .btn {
+      width: 100%;
+      padding: 0.75rem;
+      background: #4f46e5;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .btn:hover {
+      background: #4338ca;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(79, 70, 229, 0.4);
+    }
+
+    .btn:disabled {
+      background: #9ca3af;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .error {
+      background: #fee2e2;
+      color: #dc2626;
+      padding: 0.75rem;
+      border-radius: 8px;
+      margin-bottom: 1rem;
+      font-size: 0.9rem;
+    }
+
+    .success {
+      background: #d1fae5;
+      color: #059669;
+      padding: 0.75rem;
+      border-radius: 8px;
+      margin-bottom: 1rem;
+      font-size: 0.9rem;
+    }
+
+    .loading {
+      display: inline-block;
+      width: 16px;
+      height: 16px;
+      border: 2px solid #ffffff;
+      border-top-color: transparent;
+      border-radius: 50%;
+      animation: spin 0.6s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .forgot-password {
+      text-align: right;
+      margin-top: -0.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .forgot-password a {
+      color: #4f46e5;
+      text-decoration: none;
+      font-size: 0.9rem;
+    }
+
+    .forgot-password a:hover {
+      text-decoration: underline;
+    }
+
+    .divider {
+      text-align: center;
+      margin: 1.5rem 0;
+      position: relative;
+    }
+
+    .divider::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: #e5e7eb;
+    }
+
+    .divider span {
+      background: white;
+      padding: 0 1rem;
+      position: relative;
+      color: #6b7280;
+      font-size: 0.9rem;
+    }
+
+    .google-btn {
+      width: 100%;
+      padding: 0.75rem;
+      background: white;
+      color: #374151;
+      border: 1px solid #d1d5db;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .google-btn:hover {
+      background: #f9fafb;
+      border-color: #9ca3af;
+    }
+
+    .google-btn img {
+      width: 20px;
+      height: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="logo">
+      <h1>NARA AI</h1>
+      <p>Your Personal AI Assistant</p>
+    </div>
+
+    <div class="tabs">
+      <div class="tab active" onclick="switchTab('login')">Login</div>
+      <div class="tab" onclick="switchTab('register')">Register</div>
+      <div class="tab" onclick="switchTab('forgot')">Lupa Password</div>
+    </div>
+
+    <div id="message"></div>
+
+    <!-- Google Sign In Button -->
+    <div id="google-signin-container">
+      <div id="g_id_onload"
+           data-client_id="880243945977-02q96uclkdgbkiq8sa6g7495q6gu7p1r.apps.googleusercontent.com"
+           data-callback="handleGoogleLogin">
+      </div>
+      <div class="g_id_signin" data-type="standard"></div>
+      
+      <div class="divider">
+        <span>atau</span>
+      </div>
+    </div>
+
+    <!-- Login Form -->
+    <form id="login-form" class="form active" onsubmit="handleLogin(event)">
+      <div class="form-group">
+        <label for="login-username">Username atau Email</label>
+        <input type="text" id="login-username" required>
+      </div>
+      <div class="form-group">
+        <label for="login-password">Password</label>
+        <input type="password" id="login-password" required>
+      </div>
+      <div class="forgot-password">
+        <a href="javascript:void(0)" onclick="switchTab('forgot')">Lupa password?</a>
+      </div>
+      <button type="submit" class="btn" id="login-btn">Login</button>
+    </form>
+
+    <!-- Register Form -->
+    <form id="register-form" class="form" onsubmit="handleRegister(event)">
+      <div class="form-group">
+        <label for="register-username">Username</label>
+        <input type="text" id="register-username" required minlength="3">
+      </div>
+      <div class="form-group">
+        <label for="register-email">Email</label>
+        <input type="email" id="register-email" required>
+      </div>
+      <div class="form-group">
+        <label for="register-password">Password</label>
+        <input type="password" id="register-password" required minlength="6">
+      </div>
+      <div class="form-group">
+        <label for="register-confirm">Konfirmasi Password</label>
+        <input type="password" id="register-confirm" required minlength="6">
+      </div>
+      <button type="submit" class="btn" id="register-btn">Register</button>
+    </form>
+
+    <!-- Forgot Password Form -->
+    <form id="forgot-form" class="form" onsubmit="handleForgotPassword(event)">
+      <div class="form-group">
+        <label for="forgot-email">Email</label>
+        <input type="email" id="forgot-email" required>
+      </div>
+      <button type="submit" class="btn" id="forgot-btn">Kirim Link Reset</button>
+      <div style="margin-top: 1rem; text-align: center;">
+        <a href="javascript:void(0)" onclick="switchTab('login')" style="color: #4f46e5; text-decoration: none; font-size: 0.9rem;">Kembali ke Login</a>
+      </div>
+    </form>
+  </div>
+
+  <script>
+    // Google Sign-In Callback
+    function handleGoogleLogin(response) {
+      showMessage('Logging in dengan Google...', 'success');
+      
+      fetch('/auth/google', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ credential: response.credential })
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.user) {
+          showMessage('Login berhasil! Redirecting...', 'success');
+          setTimeout(() => {
+            window.location.href = '/';
+          }, 1000);
+        } else {
+          showMessage(data.error || 'Login Google gagal', 'error');
+        }
+      })
+      .catch(err => {
+        showMessage('Terjadi kesalahan koneksi', 'error');
+      });
+    }
+
+    function switchTab(tab) {
+      const tabs = document.querySelectorAll('.tab');
+      const forms = document.querySelectorAll('.form');
+      const googleContainer = document.getElementById('google-signin-container');
+      
+      tabs.forEach(t => t.classList.remove('active'));
+      forms.forEach(f => f.classList.remove('active'));
+      
+      if (tab === 'login') {
+        tabs[0].classList.add('active');
+        document.getElementById('login-form').classList.add('active');
+        googleContainer.style.display = 'block';
+      } else if (tab === 'register') {
+        tabs[1].classList.add('active');
+        document.getElementById('register-form').classList.add('active');
+        googleContainer.style.display = 'none';
+      } else if (tab === 'forgot') {
+        tabs[2].classList.add('active');
+        document.getElementById('forgot-form').classList.add('active');
+        googleContainer.style.display = 'none';
+      }
+      
+      clearMessage();
+    }
+
+    function showMessage(message, type) {
+      const messageDiv = document.getElementById('message');
+      messageDiv.className = type;
+      messageDiv.textContent = message;
+    }
+
+    function clearMessage() {
+      document.getElementById('message').className = '';
+      document.getElementById('message').textContent = '';
+    }
+
+    async function handleLogin(e) {
+      e.preventDefault();
+      
+      const username = document.getElementById('login-username').value;
+      const password = document.getElementById('login-password').value;
+      const btn = document.getElementById('login-btn');
+      
+      btn.disabled = true;
+      btn.innerHTML = '<span class="loading"></span>';
+      clearMessage();
+      
+      try {
+        const res = await fetch('/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username, password })
+        });
+        
+        const data = await res.json();
+        
+        if (res.ok) {
+          showMessage('Login berhasil! Redirecting...', 'success');
+          setTimeout(() => {
+            window.location.href = '/';
+          }, 1000);
+        } else {
+          showMessage(data.error || 'Login gagal', 'error');
+          btn.disabled = false;
+          btn.textContent = 'Login';
+        }
+      } catch (err) {
+        showMessage('Terjadi kesalahan koneksi', 'error');
+        btn.disabled = false;
+        btn.textContent = 'Login';
+      }
+    }
+
+    async function handleRegister(e) {
+      e.preventDefault();
+      
+      const username = document.getElementById('register-username').value;
+      const email = document.getElementById('register-email').value;
+      const password = document.getElementById('register-password').value;
+      const confirm = document.getElementById('register-confirm').value;
+      const btn = document.getElementById('register-btn');
+      
+      if (password !== confirm) {
+        showMessage('Password tidak cocok', 'error');
+        return;
+      }
+      
+      btn.disabled = true;
+      btn.innerHTML = '<span class="loading"></span>';
+      clearMessage();
+      
+      try {
+        const res = await fetch('/register', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username, email, password })
+        });
+        
+        const data = await res.json();
+        
+        if (res.ok) {
+          showMessage(data.message || 'Registrasi berhasil!', 'success');
+          setTimeout(() => {
+            switchTab('login');
+            document.getElementById('login-username').value = username;
+          }, 1500);
+        } else {
+          showMessage(data.error || 'Registrasi gagal', 'error');
+        }
+      } catch (err) {
+        showMessage('Terjadi kesalahan koneksi', 'error');
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Register';
+      }
+    }
+
+    async function handleForgotPassword(e) {
+      e.preventDefault();
+      
+      const email = document.getElementById('forgot-email').value;
+      const btn = document.getElementById('forgot-btn');
+      
+      btn.disabled = true;
+      btn.innerHTML = '<span class="loading"></span>';
+      clearMessage();
+      
+      try {
+        const res = await fetch('/forgot-password', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email })
+        });
+        
+        const data = await res.json();
+        
+        if (res.ok) {
+          showMessage(data.message || 'Link reset telah dikirim ke email Anda', 'success');
+        } else {
+          showMessage(data.error || 'Gagal mengirim link reset', 'error');
+        }
+      } catch (err) {
+        showMessage('Terjadi kesalahan koneksi', 'error');
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Kirim Link Reset';
+      }
+    }
+  </script>
+</body>
+</html>
